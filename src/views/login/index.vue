@@ -54,7 +54,7 @@ export default {
   .login-card {
     width: 400px;
     height: 300px;
-    background-color: rgba(0,0,0,.5); // 卡片模块设为透明背景
+    background-color: rgba(137,175,155,.5); // 卡片模块设为透明背景
     text-align: center; // 内部组件为居中对齐
     .logo {
       text-align: center;
