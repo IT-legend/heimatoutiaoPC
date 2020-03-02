@@ -8,7 +8,7 @@
         <img src="../../assets/img/logo_index.png" alt="">
         </div>
         <!-- 2.表单 绑定model属性 绑定rules属性（表单验证规则）-->
-        <el-form :model='loginForm' :rules='loginRules' style="margin-top:7px">
+        <el-form ref='myForm' :model='loginForm' :rules='loginRules' style="margin-top:7px">
           <!-- 表单容器 全部设置prop属性 prop表示要校验的字段名-->
           <el-form-item prop="mobile">
             <!-- 2.1填写手机号表单域 绑定mobile-->
@@ -16,7 +16,7 @@
           </el-form-item>
           <el-form-item prop="code">
             <!-- 2.2填写手机验证码表单域 绑定code-->
-            <el-input v-model='loginForm.code' style='width:60%;float:left' placeholder="请输入验证码"></el-input>
+            <el-input v-model='loginForm.code' style='width:60%;' placeholder="请输入验证码"></el-input>
             <el-button style='float:right;width:30%' plain="">发送验证码</el-button>
           </el-form-item>
           <el-form-item prop="checked">
@@ -25,9 +25,9 @@
               <span>我已经阅读同意用户协议和服务条款</span>
             </el-checkbox>
           </el-form-item>
-          <!-- 2.4按钮表单域 -->
+          <!-- 2.4登陆按钮表单域 注册点击事件-->
           <el-form-item>
-            <el-button style='width:100%;' type="primary" plain="">登陆</el-button>
+            <el-button @click='login' style='width:100%;' type="primary" plain="">登陆</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -61,6 +61,16 @@ export default {
         }]
       }
     }
+  },
+  methods: {
+    login () {
+      // 校验整个表单的规则
+      this.$refs.myForm.validate().then((isOK) => {
+        if (isOK) {
+          console.log('校验成功')
+        }
+      })
+    }
   }
 }
 </script>
@@ -91,7 +101,7 @@ export default {
     width: 400px;
     height: 300px;
     background-color: rgba(137,175,155,.5); // 卡片模块设为透明背景
-    text-align: center; // 内部组件为居中对齐
+    // text-align: center; // 内部组件为居中对齐
     .logo {
       text-align: center;
       img {
