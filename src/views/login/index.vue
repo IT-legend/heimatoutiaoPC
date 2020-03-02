@@ -68,6 +68,24 @@ export default {
       this.$refs.myForm.validate().then((isOK) => {
         if (isOK) {
           console.log('校验成功')
+          // 通过校验后，应该调用接口，查看手机号是否正确
+          // this.$axios.post('/authorizations')
+          this.$axios({
+            url: '/authorizations', // 请求地址
+            // params: {}, // 地址参数，就是get参数
+            data: this.loginForm, // body请求体参数，常用于post、put等
+            method: 'post' // 请求类型，默认值是get
+          }).then(res => {
+            // console.log(res.data)
+            // 获取token令牌并放在自己兜里
+            window.localStorage.setItem('user-token', res.data.data.token)
+            // 下一步拿钥匙开门，跳转到主页
+            // 采用编程式路由的方法
+            this.$router.push('/home')
+          }).catch(() => {
+            // this.$message({ message: '用户名或密码错误', type: 'error' })
+            this.$message.error('用户名或密码错误')
+          })
         }
       })
     }
