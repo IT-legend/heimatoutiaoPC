@@ -14,8 +14,7 @@
           <layout-header></layout-header>
         </el-header>
         <!-- 右侧下部分 -->
-        <el-main>
-          主要区域
+        <el-main style="padding:0">
           <!-- 这里应该放置二级路由 -->
           <router-view></router-view>
         </el-main>
@@ -24,13 +23,9 @@
 </template>
 
 <script>
-import LayoutAside from '@/components/home/layout-aside.vue' // 这里也可以省略vue后缀
-import LayoutHeader from '@/components/home/layout-header.vue'
+
 export default {
-  components: {
-    'layout-aside': LayoutAside,
-    'layout-header': LayoutHeader
-  }
+
 }
 </script>
 
