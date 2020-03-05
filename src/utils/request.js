@@ -11,7 +11,6 @@ axios.interceptors.request.use(function (config) {
 // 统一在返回之前注入token
   const token = localStorage.getItem('user-token')
   config.headers.Authorization = `Bearer ${token}` // 统一注入token
-
   return config
 }, function (error) {
 // 失败时执行第二个 axios支持promise的 如果失败应该直接reject
@@ -19,5 +18,18 @@ axios.interceptors.request.use(function (config) {
   return Promise.reject(error)
 }
 )
+
+// 响应拦截器的开发设置
+axios.interceptors.response.use(function (response) {
+// 回调函数第一个参数是响应体，成功时执行
+// 在拦截器中需要将数据返回
+// 在这里我们要对数据进行结构操作，将嵌套的data数据释放出来
+// 这里用三元将数据拆了一层
+  return response.data ? response.data : {} // 有的接口没有任何的响应数据
+}, function () {
+// 失败的时候执行
+
+})
+
 // 导出二次封装后的工具
 export default axios

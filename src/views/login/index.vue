@@ -78,7 +78,7 @@ export default {
           }).then(res => {
             // console.log(res.data)
             // 获取token令牌并放在自己兜里
-            window.localStorage.setItem('user-token', res.data.data.token)
+            window.localStorage.setItem('user-token', res.data.token)
             // 下一步拿钥匙开门，跳转到主页
             // 采用编程式路由的方法
             this.$router.push('/home')

@@ -62,7 +62,7 @@ export default {
       url: '/user/profile' // 请求地址
     }).then(res => {
       // 加载成功，将数据赋值给userInfo
-      this.userInfo = res.data.data
+      this.userInfo = res.data
     })
   }
 }
