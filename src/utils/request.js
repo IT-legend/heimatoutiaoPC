@@ -1,6 +1,7 @@
 // 封装请求工具，实际上就是对axios进行二次封装
 // 配置拦截器以及其他内容
 import axios from 'axios'
+import router from '@/router' // 导入路由实例
 // 写入拦截器以及其他操作
 // 配置axios的公共请求头地址
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
@@ -23,12 +24,21 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
 // 回调函数第一个参数是响应体，成功时执行
 // 在拦截器中需要将数据返回
-// 在这里我们要对数据进行结构操作，将嵌套的data数据释放出来
+// 在这里我们要对数据进行结构操作，将嵌套的data数据释放出来，这样调用就不用加两个data了
 // 这里用三元将数据拆了一层
   return response.data ? response.data : {} // 有的接口没有任何的响应数据
-}, function () {
+}, function (error) {
 // 失败的时候执行
-
+// error是错误对象，包含了错误的状态码和验证码
+// 401出现表示：拿错token、token过期、token格式不对。。。
+// 因为之前导航守卫已经检查了是否有token，所以这里以应该是token错误
+// 粗暴型更换token：会登录页面
+  if (error.response.status === 401) {
+    localStorage.removeItem('user-token') // 删除token
+    // 回登陆页，导入router实例，然后直接push回登录页
+    router.push('/login')
+  }
+  return Promise.reject(error) // 所有的axios调用，catch依然可以拿到错误
 })
 
 // 导出二次封装后的工具
