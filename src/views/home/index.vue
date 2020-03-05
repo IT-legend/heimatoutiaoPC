@@ -3,7 +3,7 @@
 <!-- 必须在最外层放置一个container容器 因为所有小容器必须放在这个大容器中 -->
   <el-container>
       <!-- 左侧 需要设置宽度，不然会影响布局-->
-      <el-aside  style="width:220px">
+      <el-aside  style="width:220px;background:#2e2f32" >
         <!-- 1.左侧导航组件 -->
         <layout-aside></layout-aside>
       </el-aside>
