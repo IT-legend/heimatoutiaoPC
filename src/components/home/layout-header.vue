@@ -7,7 +7,7 @@
      <el-col class='left' :span="12">
          <!-- 3.图标就是i标签 -->
          <i class="el-icon-s-unfold"></i>
-         <span>全球渣男联盟</span>
+         <span>2020全球渣男联盟应急指挥小组</span>
      </el-col>
      <!-- 2.2.右侧列 -->
      <el-col class='right' :span="12">

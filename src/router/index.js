@@ -22,6 +22,10 @@ const routes = [
       {
         path: '', // 二级路由的path什么都不写，代表二级路由的默认组件
         component: HomeTwo
+      }, {
+        // path: '/home/comment', // 评论列表的地址
+        path: 'comment', // 简写方式
+        component: () => import('@/views/comment')// 组件需要按需加载
       }
     ]
   },
