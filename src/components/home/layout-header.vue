@@ -7,7 +7,7 @@
      <el-col class='left' :span="12">
          <!-- 3.图标就是i标签 -->
          <i class="el-icon-s-unfold"></i>
-         <span>渣男集团</span>
+         <span>全球渣男联盟</span>
      </el-col>
      <!-- 2.2.右侧列 -->
      <el-col class='right' :span="12">
@@ -57,12 +57,9 @@ export default {
     }
   },
   created () {
-    const token = localStorage.getItem('user-token')
+    // 获取个人信息
     this.$axios({
-      url: '/user/profile', // 请求地址
-      headers: {
-        Authorization: `Bearer ${token}` // 请求头参数，注意加空格
-      }
+      url: '/user/profile' // 请求地址
     }).then(res => {
       // 加载成功，将数据赋值给userInfo
       this.userInfo = res.data.data
