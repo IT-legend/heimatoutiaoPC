@@ -15,9 +15,14 @@
         <el-table-column prop='total_comment_count' label='总评论数'></el-table-column>
         <el-table-column prop='fans_comment_count' label='粉丝评论数'></el-table-column>
         <el-table-column prop='' label='操作'>
-            <!-- 通过组件实现操作 -->
+            <!-- 这里用到作用域插槽=>子组件中的数据通过插槽传出，slot-scope接收 -->
+            <!-- 这里我们知道：el-table-column组件在插槽中传出了 row $index store column四个属性，我们只需要接收就好 -->
+            <template slot-scope="obj">
+              <!-- 通过组件实现操作 -->
             <el-button type="text" size="small">修改</el-button>
-            <el-button type="text" size="small">关闭评论</el-button>
+            <!-- 文本内容应该是动态的，根据评论状态显示 -->
+            <el-button @click='openOrClose(obj.row)' type="text" size="small">{{obj.row.comment_status ? '打开' : '关闭'}}评论</el-button>
+            </template>
         </el-table-column>
     </el-table>
   </el-card>
@@ -55,6 +60,32 @@ export default {
       // index 代表当前的索引
       // 该函数需要返回一个值来显示
       return cellValue ? '打开' : '关闭'
+    },
+    // 实现打开和关闭方法
+    openOrClose (row) {
+      const mess = row.comment_status ? '关闭' : '打开'
+      // 因为$confirm也支持promise 成功就进then，失败就进catch
+      this.$confirm(`是否确定${mess}评论`, '提示信息').then(() => {
+        // 调用打开或关闭接口
+        this.$axios({
+          url: '/comments/status', // 请求地址
+          method: 'put', // 请求类型
+          params: {
+            articles_id: row.id // 请求参数的文章id
+          },
+          data: {
+            // body参数
+            allow_comment: !row.comment_status // 打开还是关闭，跟评论状态相反
+          }
+        }).then(() => {
+          // 成功提示消息，并更新数据
+          this.$message.success(`${mess}评论成功`)
+          this.getComment() // 拉取数据
+        }).catch(() => {
+          // 失败进入catch
+          this.$message.error(`${mess}评论失败`)
+        })
+      })
     }
   },
   created () {
