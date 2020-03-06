@@ -27,11 +27,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less'>
     .homeTwo {
       /* 这里需要用calc计算一下高度的数值 */
         height: calc(100vh - 60px);
         background-image: url("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583252442884&di=b4fea5f449b7134d699332c32826de89&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fzhidao%2Fpic%2Fitem%2Fb64543a98226cffc7a951157b8014a90f703ea9c.jpg");
         background-size: cover;
+        img {
+          width: 100%;
+          height: 100%;
+        }
     }
 </style>

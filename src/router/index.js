@@ -26,6 +26,9 @@ const routes = [
         // path: '/home/comment', // 评论列表的地址
         path: 'comment', // 简写方式
         component: () => import('@/views/comment')// 组件需要按需加载
+      }, {
+        path: 'material',
+        component: () => import('@/views/material')
       }
     ]
   },
