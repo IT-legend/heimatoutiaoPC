@@ -1,6 +1,6 @@
 <template>
   <!-- 用一个el-card组件做评论列表的主页面 -->
-  <el-card>
+  <el-card v-loading='loading'>
     <!-- 1.放置面包屑组件 slot="header"表示面包屑会作为具名插槽给el-card的header部分，使样式完整-->
     <bread-crumb slot="header">
       <!-- 填坑评论管理 具名插槽需要写入相应的名字-->
@@ -46,7 +46,8 @@ export default {
         pageSize: 10 // 设置每页多少条，默认是10
       },
       list: [
-      ]
+      ],
+      loading: false // 控制遮罩层loading状态
     }
   },
   methods: {
@@ -59,6 +60,7 @@ export default {
     },
     // 获取评论数据
     getComment () {
+      this.loading = true // 请求前打开遮罩层
       this.$axios({
         url: '/articles', // 请求地址
         // query参数在哪个位置传呢？
@@ -74,6 +76,8 @@ export default {
         this.list = result.data.results
         // 获取完数据后，将总页数据赋值给分页组件的total
         this.page.total = result.data.total_count
+        // 请求完成后关闭遮罩层
+        this.loading = false
       })
     },
     // 定义一个格式化布尔值的函数
