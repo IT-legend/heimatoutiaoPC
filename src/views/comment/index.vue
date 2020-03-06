@@ -21,7 +21,7 @@
               <!-- 通过组件实现操作 -->
             <el-button type="text" size="small">修改</el-button>
             <!-- 文本内容应该是动态的，根据评论状态显示 -->
-            <el-button @click='openOrClose(obj.row)' type="text" size="small">{{obj.row.comment_status ? '打开' : '关闭'}}评论</el-button>
+            <el-button @click='openOrClose(obj.row)' type="text" size="small">{{obj.row.comment_status ? '关闭' : '打开'}}评论</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -71,7 +71,7 @@ export default {
           url: '/comments/status', // 请求地址
           method: 'put', // 请求类型
           params: {
-            articles_id: row.id // 请求参数的文章id
+            article_id: row.id.toString() // 请求参数的文章id，将bigNumber类型的数字转成接口可识别的字符串类型，保持一致
           },
           data: {
             // body参数
