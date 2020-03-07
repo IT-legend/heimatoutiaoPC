@@ -23,9 +23,9 @@
               <!-- 子选项内容 -->
               <div class="img-list">
                   <!-- 循环获取数据 -->
-                  <el-card class='img-card' v-for='item in list' :key="item.id">
+                  <el-card class='img-card' v-for='(item,index) in list' :key="item.id">
                       <!-- 放置图片，赋值图片地址 -->
-                      <img :src="item.url" alt="">
+                      <img :src="item.url" @click='selectImg(index)' alt="">
                       <el-row class="operate" type="flex" justify="space-around" align="middle">
                         <!-- 给两个图标注册点击事件 根据数据判断图标的颜色-->
                           <i @click='collectOrCancel(item)' :style = "{color:item.is_collected ? 'red' : 'black'}" class="el-icon-star-on"></i>
@@ -38,9 +38,9 @@
               <!-- 子选项内容 -->
               <div class="img-list">
                   <!-- 循环获取数据 -->
-                  <el-card class='img-card' v-for='item in list' :key="item.id">
+                  <el-card class='img-card' v-for='(item,index) in list' :key="item.id">
                       <!-- 放置图片，赋值图片地址 -->
-                      <img :src="item.url" alt="">
+                      <img :src="item.url" alt="" @click="selectImg(index)">
                   </el-card>
               </div>
           </el-tab-pane>
@@ -52,8 +52,19 @@
           <!-- page-size 每页多少条 -->
           <!-- 监听分页组件的切换事件 -->
           <el-pagination background :total="page.total" :current-page="page.currentPage" :page-size="page.pageSize" layout="prev,pager,next" @current-change='changePage'></el-pagination>
-
       </el-row>
+      <!-- 放置el-dialog组件，实现素材图片点击预览 -->
+      <el-dialog @opened='openEnd' :visible="dialogVisible" @close='dialogVisible = false'>
+        <!-- 放置走马灯组件 -->
+        <el-carousel ref='myCarousel' indicator-position="outside" height="400px">
+          <!-- 放置幻灯片的循环项 根据当前页的list循环-->
+          <el-carousel-item v-for='item in list' :key="item.id">
+            <!-- 内容放置图片 -->
+            <img style='width:100%' :src="item.url" alt="">
+          </el-carousel-item>
+
+        </el-carousel>
+      </el-dialog>
   </el-card>
 </template>
 
@@ -67,10 +78,22 @@ export default {
         currentPage: 1, // 默认第一页
         total: 0, // 当前页数
         pageSize: 8 // 每页多少条
-      }
+      },
+      dialogVisible: false, // 控制预览弹窗的显示与隐藏
+      clickIndex: -1 // 点击的索引
     }
   },
   methods: {
+    openEnd () {
+      // 由于图片有懒加载效果，需要定义一个方法等懒加载完毕后再执行
+      // 这个时候已经打开结束 ref已经有值 可以通过ref进行设置了
+      this.$refs.myCarousel.setActiveItem(this.clickIndex)
+    },
+    // 点击图片时调用
+    selectImg (index) {
+      this.clickIndex = index // 将索引赋值
+      this.dialogVisible = true // 打开索引
+    },
     // 定义素材删除的方法
     delMaterial (row) {
       // 通过传参接收两行数据
