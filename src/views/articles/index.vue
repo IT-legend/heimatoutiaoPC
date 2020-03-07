@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card class="articles">
       <bread-crumb slot="header">
         <template slot="title">文章列表</template>
       </bread-crumb>
@@ -32,6 +32,30 @@
               <el-date-picker type='daterange' v-model="searchForm.dateRange"></el-date-picker>
           </el-form-item>
       </el-form>
+      <!-- 开始怼文章的主体结构 flex布局-->
+      <!-- 1.表头 -->
+      <el-row class='total' type="flex" align="middle">
+          <span>共找到10000条符合条件的内容</span>
+      </el-row>
+      <!-- 2.列表内容 -->
+      <!-- article-item作为循环项 -->
+        <div class="article-item" v-for="item in list" :key="item.id.toString()">
+            <!-- 2.1左侧内容 -->
+            <div class="left">
+                <!-- 文章封面有的有值有的没值，这里我们需要给它添加一个默认值 -->
+                <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg" alt="">
+                <div class="info">
+                    <span>{{ item.title }}</span>
+                    <el-tag :type='item.status | filterType' class="tag">{{ item.status | filterStatus }}</el-tag>
+                    <span class="date">{{ item.pubdate }}</span>
+                </div>
+            </div>
+            <!-- 2.2右侧内容 -->
+            <div class="right">
+                <span><i class="el-icon-edit-outline"></i>修改</span>
+                <span><i class="el-icon-delete"></i>删除</span>
+            </div>
+        </div>
   </el-card>
 </template>
 
@@ -46,7 +70,41 @@ export default {
         channel_id: null, // 表示没有任何频道
         dateRange: [] // 日期范围
       },
-      channels: [] // 专门来接收频道的数据
+      channels: [], // 专门来接收频道的数据
+      list: [], // 接收文章列表的数据
+      //   地址对应的文件变成了变量，在编译时就会拷贝到对应的位置
+      defaultImg: require('../../assets/img/default.gif')
+    }
+  },
+  //   定义过滤器
+  filters: {
+    //   过滤器一：处理显示文本
+    filterStatus (value) {
+      // 对五个状态进行过滤
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '已发表'
+        case 3:
+          return '审核失败'
+      }
+    },
+    // 过滤器二：处理标签类型样式
+    filterType (value) {
+      // 根据当前状态的值，显示不同类型的tag标签
+      switch (value) {
+        case 0:
+          return 'warning' // 草稿的时候就警告
+        case 1:
+          return 'info' // 待审核
+        case 2:
+          return ''
+        case 3:
+          return 'danger' // 失败就错误
+      }
     }
   },
   methods: {
@@ -58,15 +116,70 @@ export default {
         //   获取频道接口返回的数据
         this.channels = result.data.channels
       })
+    },
+    //   定义获取文章列表方法
+    getArticles () {
+      this.$axios({
+        url: '/articles'
+      }).then(result => {
+      // 将返回数据赋值给我们的数据
+        this.list = result.data.results
+      })
     }
   },
   //   钩子函数实例化后调用
   created () {
     this.getChannels()
+    this.getArticles()
   }
 }
 </script>
 
-<style>
+<style lang='less' scoped>
+    .articles{
+        .total{
+            height: 60px;
+            border-bottom: 1px dashed #ccc;
+        }
+        // 对文章循环项进行样式的编写
+        .article-item {
+            display:flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px soild #ccc;
+            .left {
+                display: flex;
+                img {
+                    width: 180px;
+                    height: 100px;
+                    border-radius: 4px;
+                }
+                .info {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100px;
+                    justify-content: space-around;
+                    margin-left: 10px;
+                    .date {
+                        color:#999;
+                        font-size: 12px;
+                    }
+                    .tag {
+                        width: 60px;
+                        text-align: center;
+                    }
+                }
+            }
+            .right {
+                span {
+                    font-size: 14px;
+                    margin-right: 8px;
+                    cursor: pointer;
+                    user-select: none;
+                }
+            }
+
+        }
+    }
 
 </style>
