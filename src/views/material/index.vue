@@ -27,8 +27,9 @@
                       <!-- 放置图片，赋值图片地址 -->
                       <img :src="item.url" alt="">
                       <el-row class="operate" type="flex" justify="space-around" align="middle">
-                          <i class="el-icon-star-on"></i>
-                          <i class="el-icon-delete"></i>
+                        <!-- 给两个图标注册点击事件 根据数据判断图标的颜色-->
+                          <i @click='collectOrCancel(item)' :style = "{color:item.is_collected ? 'red' : 'black'}" class="el-icon-star-on"></i>
+                          <i @click='delMaterial(item)' class="el-icon-delete"></i>
                       </el-row>
                   </el-card>
               </div>
@@ -70,6 +71,42 @@ export default {
     }
   },
   methods: {
+    // 定义素材删除的方法
+    delMaterial (row) {
+      // 通过传参接收两行数据
+      // 删除之前应该提示
+      this.$confirm('您确定要删除该素材吗？', '提示信息').then(() => {
+        // 如果确定，调接口，删数据
+        this.$axios({
+          url: `/user/images/${row.id}`,
+          method: 'delete'
+        }).then(() => {
+          // 如果删除成功，可以重新拉取数据，也可以在前端删除
+          // C端 不会重新拉取数据，只在前端修改对应数据
+          // B端 可以拉取数据
+          this.getMaterial()
+        }).catch(() => {
+          this.$message.error('操作失败')
+        })
+      })
+    },
+    // 定义素材收藏/取消收藏的方法
+    collectOrCancel (row) {
+      // 通过传参接收两行数据
+      // 实现收藏和取消收藏的逻辑
+      // 需要根据数据中is_collect这个值控制收藏图标的颜色，true=红色，false=黑色
+      this.$axios({
+        url: `/user/images/${row.id}`,
+        method: 'put',
+        data: {
+          collect: !row.is_collected // true / false
+        }
+      }).then(() => {
+        this.getMaterial()
+      }).catch(() => {
+        this.$message.error('操作失败')
+      })
+    },
     // 定义一个上传素材的方法
     upLoadImg (params) {
       // params.file就是我要传的图片文件
