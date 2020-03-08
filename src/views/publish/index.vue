@@ -17,10 +17,12 @@
           <!-- 第二行 内容行 -->
           <el-form-item label="内容" prop="content">
               <!-- 输入文本域组件 -->
-              <el-input v-model='publishForm.content' placeholder="请输入内容" type="textarea" :rows="4"></el-input>
+              <!-- 此时将el-input换位quill-editor即可实现富文本编辑器 -->
+              <quill-editor v-model='publishForm.content' style="height:300px"></quill-editor>
+              <!-- <el-input v-model='publishForm.content' placeholder="请输入内容" type="textarea" :rows="4"></el-input> -->
           </el-form-item>
           <!-- 第三行 封面行 -->
-          <el-form-item label="封面" prop="cover">
+          <el-form-item label="封面" prop="cover" style="margin-top:120px">
               <!-- 放置单选组件 封面单选组绑定的是 cover对象中的 type-->
               <el-radio-group v-model="publishForm.cover.type">
                   <!-- 这里需要给每一个el-radio加label属性 -->
