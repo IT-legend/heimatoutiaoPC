@@ -31,7 +31,11 @@
           <!-- 第四行 频道行 -->
           <el-form-item label="频道">
               <!-- 放置下拉菜单组件 -->
-              <el-select placeholder="请选择频道"></el-select>
+              <el-select placeholder="请选择频道">
+                  <!-- 下拉选项 v-for获得-->
+                  <!-- 要写label显示值和value保存值 -->
+                  <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
           </el-form-item>
           <!-- 第五行 按钮行 -->
           <el-form-item >
@@ -45,7 +49,25 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      channels: [] // 接收频道数据
+    }
+  },
+  methods: {
+    //   定义方法获取频道数据
+    getChannels () {
+      this.$axios({
+        url: '/channels' // 接口
+      }).then(result => {
+        this.channels = result.data.channels // 将接口数据赋值给本地数据
+      })
+    }
+  },
+  created () {
+    //   调用获取频道数据的方法
+    this.getChannels()
+  }
 }
 </script>
 
