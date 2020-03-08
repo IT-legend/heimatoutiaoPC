@@ -75,13 +75,13 @@ export default {
     }
   },
   methods: {
-    // 用ID获取文章数据
+    // 3.定义根据ID获取文章详情数据的方法
     getArticleById (id) {
       // 调接口拿数据
       this.$axios({
-        url: `/articles/${id}` // 请求地址
+        url: `/articles/${id}` // 拿到ID并拼接到请求地址上
       }).then(result => {
-        this.publishForm = result.data // 将数据赋值给我们的表单数据
+        this.publishForm = result.data // 可以直接将获取到的数据赋值给我们的表单数据
       })
     },
     //   1.定义方法获取频道数据
@@ -97,33 +97,72 @@ export default {
       // this.$refs 来获取el-form实例，实现调用方法
     //   validate两种调用方式：1，回调形式 2，promise形式
       this.$refs.myForm.validate().then(() => {
-        //   进入这里表示校验成功了，调接口
+        // 如果发布文章时，如果id为空，就是发布新文章，如果有id就是修改文章
+        const { articleId } = this.$route.params
+        // 直接简写，这里等于做了四件事：
+        // 发布正式文章，发布草稿文章，修改正式文章，修改草稿文章
         this.$axios({
-          url: '/articles', // 请求地址
-          method: 'post', // 请求类型
-          params: { draft }, // query参数
-          data: this.publishForm // 请求body参数
+          // 这里注意：/articles/${articleId} $前面必须加斜杠，不然会报错
+          url: articleId ? `/articles/${articleId}` : '/articles', // 根据场景决定用什么地址
+          method: articleId ? 'put' : 'post', // 根据场景决定用什么请求类型
+          params: { draft },
+          data: this.publishForm// 请求体参数
         }).then(() => {
           // 进入这里表示发布成功
-          this.$message.success('发布成功')
+          this.$message.success('操作成功')
           // 发布成功后，需要跳转到文章列表页
           this.$router.push('/home/articles')
         }).catch(() => {
           // 进入这里表示发布失败
-          this.$message.error('发布失败')
+          this.$message.error('操作失败')
         })
+        // if (articleId) {
+        //   // 有id传入，则为修改，这里要写入修改文章的逻辑代码
+        //   this.$axios({
+        //     url: `/articles/${articleId}`, // 修改地址
+        //     method: 'put',
+        //     params: { draft },
+        //     data: this.publishForm// 请求体参数
+        //   }).then(() => {
+        //     // 进入这里表示发布成功
+        //     this.$message.success('发布成功')
+        //     // 发布成功后，需要跳转到文章列表页
+        //     this.$router.push('/home/articles')
+        //   }).catch(() => {
+        //   // 进入这里表示发布失败
+        //     this.$message.error('发布失败')
+        //   })
+        // } else {
+        //   // 无id传入，则为新增
+        // //   进入这里表示校验成功了，调接口
+        //   this.$axios({
+        //     url: '/articles', // 请求地址
+        //     method: 'post', // 请求类型
+        //     params: { draft }, // query参数
+        //     data: this.publishForm // 请求body参数
+        //   }).then(() => {
+        //   // 进入这里表示发布成功
+        //     this.$message.success('发布成功')
+        //     // 发布成功后，需要跳转到文章列表页
+        //     this.$router.push('/home/articles')
+        //   }).catch(() => {
+        //   // 进入这里表示发布失败
+        //     this.$message.error('发布失败')
+        //   })
+        // }
       })
     }
   },
-  // 判断是否在文章id，如果有就获取其数据
+  // 判断是否在文章id，如果有就是要修改文章，那么就获取其数据
   created () {
     //   1.调用获取频道数据的方法
     this.getChannels()
+    // articleId是我们在路由参数中定义的
     const { articleId } = this.$route.params
     // if (articleId) {
     //   this.getArticleById()
     // }
-    // 方法二：
+    // 方法二：判断文章是否带有ID，有就直接获取它的ID，前面为true，才会执行后面的逻辑
     articleId && this.getArticleById(articleId)
   }
 }
