@@ -2,6 +2,7 @@
 import LayoutAside from './home/layout-aside.vue'
 import LayoutHeader from './home/layout-header.vue'
 import Breadcrumb from './common/bread-crumb.vue' // 引入公共组件
+
 export default {
   install: function (Vue) {
     // 注册全局组件Vue，这样在任意位置都可以直接使用它上面的方法，组件等

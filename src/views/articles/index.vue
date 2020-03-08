@@ -58,7 +58,7 @@
             </div>
             <!-- 2.2右侧内容 -->
             <div class="right">
-                <span><i class="el-icon-edit-outline"></i>修改</span>
+                <span @click="$router.push(`/home/publish/${item.id.toString()}`)"><i class="el-icon-edit-outline"></i>修改</span>
                 <!-- 需要传递参数，传入要删除的id -->
                 <span @click="delMaterial(item.id.toString())"><i class="el-icon-delete"></i>删除</span>
             </div>
@@ -138,7 +138,6 @@ export default {
     }
   },
   methods: {
-    // 定义删除方法
     delMaterial (id) {
       this.$confirm('Are you sure?', '提示信息').then(() => {
         // 表示确定删除

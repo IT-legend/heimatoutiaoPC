@@ -27,13 +27,13 @@ const routes = [
         path: 'comment', // 简写方式
         component: () => import('@/views/comment')// 组件需要按需加载
       }, {
-        path: 'material',
+        path: 'material', // 素材管理
         component: () => import('@/views/material')
       }, {
-        path: 'articles',
+        path: 'articles', // 文章列表
         component: () => import('@/views/articles')
       }, {
-        path: 'publish',
+        path: 'publish/:articleId?', // 发布文章，加问号是可有可无
         component: () => import('@/views/publish')
       }
     ]
