@@ -58,7 +58,10 @@
             </div>
             <!-- 2.2右侧内容 -->
             <div class="right">
+                <!-- 修改按钮 -->
+                <!-- 点击事件直接跟逻辑的方法 -->
                 <span @click="$router.push(`/home/publish/${item.id.toString()}`)"><i class="el-icon-edit-outline"></i>修改</span>
+                <!-- 删除按钮 -->
                 <!-- 需要传递参数，传入要删除的id -->
                 <span @click="delMaterial(item.id.toString())"><i class="el-icon-delete"></i>删除</span>
             </div>
@@ -138,6 +141,7 @@ export default {
     }
   },
   methods: {
+    // 5.定义按钮删除事件
     delMaterial (id) {
       this.$confirm('Are you sure?', '提示信息').then(() => {
         // 表示确定删除
@@ -153,14 +157,14 @@ export default {
         })
       })
     },
-    // 页码改变事件
+    // 4.页码改变事件
     changePage (newPage) {
       // 将最新页码给当前页码
       this.page.currentPage = newPage // 最新页码赋值
       // 页码切换，需要重新组装条件
       this.changeCondition()
     },
-    // 定义条件改变事件
+    // 3.定义条件改变事件
     changeCondition () {
       // 当触发了此方法的时候 表单数据已经变成最新的了
       // 组装条件 params
@@ -176,7 +180,7 @@ export default {
       // 条件已经组装好，通过调用传给接口
       this.getArticles(params) // 直接调用获取列表方法
     },
-    //   定义获取频道数据的方法
+    //   2.定义获取频道数据的方法
     getChannels () {
       this.$axios({
         url: '/channels'
@@ -185,7 +189,7 @@ export default {
         this.channels = result.data.channels
       })
     },
-    //   定义获取文章列表方法
+    //   1.定义获取文章列表方法
     getArticles (params) {
       this.$axios({
         url: '/articles',
