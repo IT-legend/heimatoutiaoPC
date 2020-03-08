@@ -62,6 +62,11 @@
                 <span><i class="el-icon-delete"></i>删除</span>
             </div>
         </div>
+        <!-- 放入分页组件 -->
+        <el-row type="flex" justify="center" align="middle" style="height:80px">
+          <el-pagination background layout="prev,pager,next" :total="page.total" :current-page="page.currentPage" :page-size="page.pageSize"
+          @current-change='changePage'></el-pagination>
+        </el-row>
   </el-card>
 </template>
 
@@ -79,7 +84,13 @@ export default {
       channels: [], // 专门来接收频道的数据
       list: [], // 接收文章列表的数据
       //   地址对应的文件变成了变量，在编译时就会拷贝到对应的位置
-      defaultImg: require('../../assets/img/default.gif')
+      defaultImg: require('../../assets/img/default.gif'),
+      // 定义分页对象
+      page: {
+        total: 0,
+        currentPage: 1,
+        pageSize: 10
+      }
     }
   },
   // 第二种监听方式：watch深度监听data中的数据变化
@@ -89,6 +100,7 @@ export default {
       // 固定写法，数据变化触发更新
       handler () {
         // 统一调用改变条件方法
+        this.page.currentPage = 1 // 只要条件变化，页面归1
         this.changeCondition()
       }
     }
@@ -125,15 +137,25 @@ export default {
     }
   },
   methods: {
+    // 页码改变事件
+    changePage (newPage) {
+      // 将最新页码给当前页码
+      this.page.currentPage = newPage // 最新页码赋值
+      // 页码切换，需要重新组装条件
+      this.changeCondition()
+    },
     // 定义条件改变事件
     changeCondition () {
       // 当触发了此方法的时候 表单数据已经变成最新的了
       // 组装条件 params
       const params = {
+        // 条件变化，回第一页
+        page: this.page.currentPage,
+        per_page: this.page.pageSize,
         status: this.searchForm.status === 5 ? null : this.searchForm.status, // 5是我们虚构的
         channel_id: this.searchForm.channel_id, // 表单数据
-        begin_pubdate: this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
-        end_pubdate: this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+        begin_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
+        end_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
       }
       // 条件已经组装好，通过调用传给接口
       this.getArticles(params) // 直接调用获取列表方法
@@ -155,6 +177,8 @@ export default {
       }).then(result => {
       // 将返回数据赋值给我们的数据
         this.list = result.data.results
+        // 将页码总数赋值给分页
+        this.page.total = result.data.total_count
       })
     }
   },
