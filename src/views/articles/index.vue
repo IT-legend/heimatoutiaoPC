@@ -9,6 +9,8 @@
           <!-- 第一项 -->
           <el-form-item label='文章状态：'>
               <!-- 放置单选框组 -->
+              <!-- 第一种监听值改变的方式 change-->
+              <!-- <el-radio-group @change='changeCondition' v-model="searchForm.status"> -->
               <el-radio-group v-model="searchForm.status">
                   <!-- 单选框选项 label值表示该选项对应的值-->
                   <!-- :label表示后面的值不加引号 -->
@@ -21,6 +23,8 @@
           </el-form-item>
           <!-- 第二项 -->
           <el-form-item label='频道类型：'>
+              <!-- 第一种监听值改变的方式 change-->
+              <!-- <el-select @change='changeCondition' v-model='searchForm.channel_id' placeholder="请选择频道"> -->
               <el-select v-model='searchForm.channel_id' placeholder="请选择频道">
                   <!-- 下拉选项 通过接口获取 -->
                   <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -29,7 +33,9 @@
           <!-- 第三项 日期选择器-->
           <el-form-item label='日期范围：'>
               <!-- 日期范围选择组件 要设置type属性为daterange-->
-              <el-date-picker type='daterange' v-model="searchForm.dateRange"></el-date-picker>
+              <!-- 第一种监听值改变的方式 change-->
+              <!-- <el-date-picker @change="changeCondition" value-format='yyyy-MM-dd' type='daterange' v-model="searchForm.dateRange"></el-date-picker> -->
+              <el-date-picker value-format='yyyy-MM-dd' type='daterange' v-model="searchForm.dateRange"></el-date-picker>
           </el-form-item>
       </el-form>
       <!-- 开始怼文章的主体结构 flex布局-->
@@ -76,6 +82,17 @@ export default {
       defaultImg: require('../../assets/img/default.gif')
     }
   },
+  // 第二种监听方式：watch深度监听data中的数据变化
+  watch: {
+    searchForm: {
+      deep: true, // 固定写法，表示深度检测searchForm中的数据变化
+      // 固定写法，数据变化触发更新
+      handler () {
+        // 统一调用改变条件方法
+        this.changeCondition()
+      }
+    }
+  },
   //   定义过滤器
   filters: {
     //   过滤器一：处理显示文本
@@ -108,6 +125,19 @@ export default {
     }
   },
   methods: {
+    // 定义条件改变事件
+    changeCondition () {
+      // 当触发了此方法的时候 表单数据已经变成最新的了
+      // 组装条件 params
+      const params = {
+        status: this.searchForm.status === 5 ? null : this.searchForm.status, // 5是我们虚构的
+        channel_id: this.searchForm.channel_id, // 表单数据
+        begin_pubdate: this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
+        end_pubdate: this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+      }
+      // 条件已经组装好，通过调用传给接口
+      this.getArticles(params) // 直接调用获取列表方法
+    },
     //   定义获取频道数据的方法
     getChannels () {
       this.$axios({
@@ -118,9 +148,10 @@ export default {
       })
     },
     //   定义获取文章列表方法
-    getArticles () {
+    getArticles (params) {
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        params
       }).then(result => {
       // 将返回数据赋值给我们的数据
         this.list = result.data.results
