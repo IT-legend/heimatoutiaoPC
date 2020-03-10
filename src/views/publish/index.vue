@@ -32,6 +32,9 @@
                   <el-radio :label="0">无图</el-radio>
                   <el-radio :label="-1">自动</el-radio>
               </el-radio-group>
+              <!-- 放置我们封装的封面组件 -->
+              <!-- 把封面图片传给了子组件 -->
+              <cover-image :list='publishForm.cover.images'></cover-image>
           </el-form-item>
           <!-- 第四行 频道行 -->
           <el-form-item label="频道" prop="channel_id">
