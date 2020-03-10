@@ -17,7 +17,14 @@
                 @current-change='changePage'></el-pagination>
             </el-row>
       </el-tab-pane>
-      <el-tab-pane label="上传素材" name="upload">上传素材</el-tab-pane>
+      <el-tab-pane label="上传素材" name="upload">
+          <!-- 3-放置上传组件 必须写入action属性，否则报错-->
+          <!-- http-request自定义上传 会传入一个params参数-->
+          <el-upload action="" class="uploadImg" :http-request="uploadImg" :show-file-list='false'>
+              <!-- 放置一个元素用来点击，进行上传 -->
+              <i class="el-icon-circle-plus"></i>
+          </el-upload>
+      </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -64,6 +71,24 @@ export default {
     clickImg (url) {
       // 将点击图片接收到的url参数传递给上层组件
       this.$emit('selectOneImg', url)// 将url参数传出去
+    },
+    // 4-自定义上传素材方法
+    uploadImg (params) {
+      // 调用上传接口
+      const data = new FormData()
+      // 加入文件参数
+      data.append('image', params.file)
+      // 开始发送上传请求
+      this.$axios({
+        url: '/user/images', // 请求接口
+        method: 'post', // 上传或者新增一般为post类型
+        data
+      }).then(result => {
+        // 上传成功，接口返回一个上传成功的图片url地址，拿到url之后要上传给父组件
+        this.$emit('selectOneImg', result.data.url)// 将url参数传出去
+      }).catch(() => {
+        this.$message.error('上传失败')
+      })
     }
   },
   created () {
@@ -85,6 +110,16 @@ export default {
         img {
             width: 100%;
         }
+    }
+}
+.uploadImg {
+    display: flex;
+    justify-content: center;
+    i {
+        font-size: 30px;
+        padding: 50px;
+        border: 2px dashed #ccc;
+        border-radius: 4px;
     }
 }
 </style>
