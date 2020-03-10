@@ -80,6 +80,31 @@ export default {
       }
     }
   },
+  // 7-如果想要捕捉路由参数的变化，我们可以采用watch来监听data中$route的变化
+  watch: {
+    // 监听谁就写谁
+    $route: function (to, from) {
+      // to表示新的路由地址对象
+      // from表示旧的路由地址对象
+      // 根据to属性中的params中的articleId的变化来决定是否改变数据
+      // 如果有id就获取编辑文章的数据 如果没有就把表单重置初始化
+      if (to.params.articleId) {
+        // 存在id，就获取数据
+        this.getArticleById(to.params.articleId)
+      } else {
+        // 不存在id重置表单
+        this.publishForm = {
+          title: '', // 2-1 文章标题
+          content: '', // 2-2 文章内容
+          cover: {
+            type: 0, // -1是自动，0是无图，1是单图，3是三图
+            images: [] // 字符串数组，对应type
+          }, // 2-3 文章封面
+          channel_id: null // 2-4 频道id
+        }
+      }
+    }
+  },
   methods: {
     // 5-定义方法监听二级组件传递过来的数据
     receiveImg (url, index) {
