@@ -8,6 +8,7 @@ import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
 import CoverImage from './publish/cover-image.vue'
+import SelectImage from './publish/select-image.vue'
 export default {
   install: function (Vue) {
     // 注册全局组件Vue，这样在任意位置都可以直接使用它上面的方法，组件等
@@ -15,6 +16,7 @@ export default {
     Vue.component('layout-header', LayoutHeader) // 注册右侧头部组件
     Vue.component('bread-crumb', Breadcrumb) // 注册面包屑组件
     Vue.use(VueQuillEditor) // 注册富文本编辑器
-    Vue.component('cover-image', CoverImage) // 注册封面组件
+    Vue.component('cover-image', CoverImage) // 注册二级封面组件
+    Vue.component('select-image', SelectImage) // 注册三级弹窗中显示图片组件
   }
 }
