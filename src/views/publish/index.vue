@@ -24,8 +24,9 @@
           <!-- 第三行 封面行 -->
           <el-form-item label="封面" prop="cover" style="margin-top:120px">
               <!-- 放置单选组件 封面单选组绑定的是 cover对象中的 type-->
-              <el-radio-group v-model="publishForm.cover.type">
+              <el-radio-group v-model="publishForm.cover.type" @change="changeType">
                   <!-- 这里需要给每一个el-radio加label属性 -->
+                  <!-- 监听单选组的值改变事件 -->
                   <el-radio :label="1">单图</el-radio>
                   <el-radio :label="3">三图</el-radio>
                   <el-radio :label="0">无图</el-radio>
@@ -77,6 +78,19 @@ export default {
     }
   },
   methods: {
+    // 4-定义监听单选类型发生变化事件
+    changeType () {
+      if (this.publishForm.cover.type === 1) {
+        // 此时没有选择图片，所以这里是空字符串
+        this.publishForm.cover.images = ['']
+      } else if (this.publishForm.cover.type === 3) {
+        // 此时依旧没有选择图片，所以给三个空字符串
+        this.publishForm.cover.images = ['', '', '']
+      } else {
+        // 此时为无图或者自动，给一个空数组
+        this.publishForm.cover.images = []
+      }
+    },
     // 3.定义根据ID获取文章详情数据的方法
     getArticleById (id) {
       // 调接口拿数据
