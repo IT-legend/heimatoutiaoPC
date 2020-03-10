@@ -16,17 +16,14 @@
                 <!-- 第二行表单域 用户简介-->
                 <el-form-item label="用户简介">
                     <el-input style="width:30%" v-model="formData.intro"></el-input>
-
                 </el-form-item>
                 <!-- 第三行表单域 用户邮箱-->
                 <el-form-item label="用户邮箱" prop="email">
                     <el-input style="width:30%" v-model="formData.email"></el-input>
-
                 </el-form-item>
                 <!-- 第四行表单域 手机号码能看不能改，设置disabled属性即可-->
                 <el-form-item label="手机号码">
                     <el-input style="width:30%" disabled="" v-model="formData.mobile"></el-input>
-
                 </el-form-item>
                 <!-- 第五行表单域 功能按钮-->
                 <el-form-item>
@@ -34,7 +31,11 @@
                 </el-form-item>
             </el-form>
             <!-- 放置头像 -->
+            <!-- 需要放置上传组件，点击图片的时候上传 -->
+            <el-upload action="" :http-request="uploadImg"
+            :show-file-list="false">
             <img :src="formData.photo ? formData.photo : defaultImg" alt="" class="head-upload">
+            </el-upload>
 
   </el-card>
 </template>
@@ -60,6 +61,22 @@ export default {
     }
   },
   methods: {
+    //   3-定义上传头像图片的方法
+    uploadImg (params) {
+    //   params.file是我们上传文件传过来的文件数据
+      const data = new FormData()
+      data.append('photo', params.file)
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data// 要传递的参数
+      }).then(result => {
+        //   拿到数据赋值给我们的新地址
+        this.formData.photo = result.data.photo
+        // 现在拿到头像新地址，但是头部组件的小头像没有即时更新
+        // 需要处理非关系型组件之间传值 eventBus vuex
+      })
+    },
     //   2-定义保存方法
     saveUser () {
       this.$refs.myForm.validate().then(() => {
