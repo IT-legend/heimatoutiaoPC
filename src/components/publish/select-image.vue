@@ -8,7 +8,7 @@
               <!-- 循环素材图片 -->
               <el-card v-for="item in list" :key="item.id" class="image-card">
                   <!-- 放入img显示素材图片 -->
-                  <img :src="item.url" alt="">
+                  <img :src="item.url" alt="" @click="clickImg(item.url)">
               </el-card>
           </div>
             <!-- 2-定义分页组件 -->
@@ -59,6 +59,11 @@ export default {
       this.page.currentPage = newPage
       //   重新获取数据
       this.getAllImage()
+    },
+    // 3-点击图片时触发
+    clickImg (url) {
+      // 将点击图片接收到的url参数传递给上层组件
+      this.$emit('selectOneImg', url)// 将url参数传出去
     }
   },
   created () {

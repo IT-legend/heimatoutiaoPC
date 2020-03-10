@@ -34,7 +34,7 @@
               </el-radio-group>
               <!-- 放置我们封装的封面组件 -->
               <!-- 把封面图片传给了子组件 -->
-              <cover-image :list='publishForm.cover.images'></cover-image>
+              <cover-image :list='publishForm.cover.images' @selectTwoImg='receiveImg'></cover-image>
           </el-form-item>
           <!-- 第四行 频道行 -->
           <el-form-item label="频道" prop="channel_id">
@@ -81,6 +81,13 @@ export default {
     }
   },
   methods: {
+    // 5-定义方法监听二级组件传递过来的数据
+    receiveImg (url, index) {
+      // 拿到数据进行处理，更新data中image的数据即可
+      // 但是从子组件中拿到的只是一个image的url地址，我们本身的data数组中的image是一个数组，如何更新？
+      // 简单方式
+      this.publishForm.cover.images.splice(index, 1, url)
+    },
     // 4-定义监听单选类型发生变化事件
     changeType () {
       if (this.publishForm.cover.type === 1) {
